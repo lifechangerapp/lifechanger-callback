@@ -2,13 +2,14 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-// Callback endpoint for Ayet Studios
 app.post('/reward-callback', (req, res) => {
   try {
+    const apiKey = req.headers['x-api-key'] || process.env.AYET_API_KEY; // Ayet API Key चेक
+    if (!apiKey || apiKey !== process.env.AYET_API_KEY) {
+      return res.status(403).send('Unauthorized');
+    }
     console.log('Ayet Studios Callback:', req.body);
-    // रिवॉर्ड लॉजिक जोड़ें: उदाहरण - My Wallet अपडेट करने के लिए डेटाबेस या API कॉल
-    // Placeholder: const reward = req.body.reward; // रिवॉर्ड डेटा निकालें
-    // Placeholder: updateWallet(reward); // कस्टम फंक्शन जोड़ें
+    // रिवॉर्ड लॉजिक: My Wallet अपडेट
     res.status(200).send('OK');
   } catch (error) {
     console.error('Error processing callback:', error);
@@ -16,6 +17,5 @@ app.post('/reward-callback', (req, res) => {
   }
 });
 
-// Start server with environment port or default
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

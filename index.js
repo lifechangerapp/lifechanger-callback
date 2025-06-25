@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
 const admin = require('firebase-admin');
+const fs = require('fs');
 
 app.use(express.json());
 
-// Firebase इनीशियलाइज़ेशन
-const serviceAccount = require('C:/Users/HP/AndroidStudioProjects/LifeChanger2/real-life-changer-firebase-adminsdk-q5dui-d0fa39b65c.json');
+// Firebase इनीशियलाइज़ेशन (Secret File से)
+const serviceAccountPath = '/etc/secrets/firebase-service-account.json'; // Secret File का पाथ
+const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });

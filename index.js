@@ -2,36 +2,28 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-// Health check or default GET route
+// Health check
 app.get('/reward-callback', (req, res) => {
   res.status(200).send('Life Changer Callback Server is running');
 });
 
-// Callback endpoint for Ayet Studios
+// BitLabs Callback endpoint
 app.post('/reward-callback', (req, res) => {
   try {
-    const apiKey = req.headers['x-api-key'] || process.env.AYET_API_KEY; // Ayet API Key चेक
-    if (!apiKey || apiKey !== process.env.AYET_API_KEY) {
-      console.log('Unauthorized access attempt:', req.ip);
-      return res.status(403).send('Unauthorized');
+    console.log('BitLabs Callback Received:', req.body);
+    const rewardData = req.body.amount || req.body.reward || 0; // BitLabs का डेटा फॉर्मेट चेक करें
+    if (rewardData > 0) {
+      updateWallet(rewardData); // वॉलेट अपडेट
     }
-    console.log('Ayet Studios Callback:', req.body);
-    // रिवॉर्ड लॉजिक: My Wallet अपडेट
-    const rewardData = req.body.reward || 0; // उदाहरण: रिवॉर्ड डेटा निकालें
-    updateWallet(rewardData); // प्लेसहोल्डर फंक्शन, इसे कस्टमाइज़ करें
-    res.status(200).send('OK');
+    res.status(200).send('OK'); // BitLabs को सफलता का जवाब
   } catch (error) {
     console.error('Error processing callback:', error.message, 'from IP:', req.ip);
     res.status(500).send('Internal Server Error');
   }
 });
 
-// प्लेसहोल्डर फंक्शन: रिवॉर्ड को वॉलेट में अपडेट करने के लिए
 function updateWallet(reward) {
-  // TODO: यहाँ डेटाबेस या API कॉल जोड़ें, उदाहरण:
-  // const wallet = /* डेटाबेस से वॉलेट डेटा */;
-  // wallet.balance += reward;
-  // /* डेटाबेस में सेव करें */;
+  // TODO: यहाँ डेटाबेस या वॉलेट अपडेट करें
   console.log(`Wallet updated with reward: ${reward}`);
 }
 
